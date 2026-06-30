@@ -1,65 +1,227 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useRef } from 'react';
+import Image from 'next/image';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export default function Home() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // ----------------------------------------------------
+      // SECTION 1: The Recording Starts (Hero)
+      // ----------------------------------------------------
+      const tlHero = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.hero-section',
+          start: 'top top',
+          end: '+=100%',
+          pin: true,
+          scrub: 1,
+        },
+      });
+
+      tlHero
+        .to('.hero-text-left', { xPercent: -150, ease: 'none' }, 0)
+        .to('.hero-text-right', { xPercent: 150, ease: 'none' }, 0)
+        .fromTo('.fx3-camera',
+          { scale: 1, x: 0, rotation: 0, opacity: 1 },
+          { scale: 1.3, x: 0, rotation: 0, ease: 'none', immediateRender: false }, 0);
+
+      // Pulsing tally light
+      gsap.to('.tally-light', {
+        opacity: 0.2,
+        scale: 0.8,
+        yoyo: true,
+        repeat: -1,
+        duration: 0.8,
+        ease: 'power1.inOut',
+      });
+
+      // ----------------------------------------------------
+      // SECTION 2: The Vertical Revolution
+      // ----------------------------------------------------
+      const tlSec2 = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.section-2',
+          start: 'top 80%',
+          end: 'center center',
+          scrub: 1,
+        },
+      });
+
+      tlSec2
+        .fromTo('.fx3-camera',
+          { x: 0, rotation: 0, scale: 1.3 },
+          { x: 300, rotation: 90, scale: 1.3, ease: 'power1.inOut', immediateRender: false }, 0)
+        .from('.sec-2-text', { opacity: 0, y: 50, stagger: 0.1, ease: 'power1.out' }, 0);
+
+      // ----------------------------------------------------
+      // SECTION 3: The Timeline (Burst)
+      // ----------------------------------------------------
+      // First, bring the camera back to center as the section enters
+      gsap.fromTo('.fx3-camera',
+        { x: 300, rotation: 90, scale: 1.3 },
+        {
+          x: 0,
+          rotation: 0,
+          scale: 1.3,
+          ease: 'power1.inOut',
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: '.section-3',
+            start: 'top bottom',
+            end: 'top 20%',
+            scrub: 1,
+          }
+        }
+      );
+
+      // Then, frames burst out from the center behind the camera
+      gsap.fromTo(
+        '.timeline-frame',
+        {
+          x: 0,
+          y: 0,
+          scale: 0.5,
+          opacity: 0,
+          rotation: 0,
+        },
+        {
+          // PERBAIKAN 1: Nilai X & Y diperkecil agar tidak terlempar keluar layar
+          x: (i) => [250, -250, 150, -150, 320, -320][i],
+          y: (i) => [-120, -80, 150, 100, -180, 180][i],
+          scale: 1,
+          opacity: 1,
+          rotation: (i) => [15, -15, 8, -8, 22, -22][i],
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.section-3',
+            start: 'top 30%',
+            end: 'center center',
+            scrub: 1.5,
+          }
+        }
+      );
+
+      // Deep parallax: as we keep scrolling, they float on Y axis
+      gsap.to('.timeline-frame', {
+        // PERBAIKAN 2: Kurangi intensitas parallax agar elemen tidak cepat hilang
+        yPercent: (i) => (i % 2 === 0 ? -40 : 40),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.section-3',
+          start: 'center center',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      });
+      // ----------------------------------------------------
+      // SECTION 4: Action (CTA)
+      // ----------------------------------------------------
+      const tlSec4 = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.section-4',
+          start: 'top 80%',
+          end: 'center center',
+          scrub: 1,
+        },
+      });
+
+      tlSec4
+        .fromTo('.fx3-camera',
+          { scale: 1.3, opacity: 1, x: 0, rotation: 0 },
+          { scale: 0.5, opacity: 0, x: 0, rotation: 0, ease: 'power1.inOut', immediateRender: false }, 0)
+        .from('.cta-content', { scale: 0.8, opacity: 0, ease: 'power1.out' }, 0);
+
+      // Magnetic Button Effect
+      const btn = document.querySelector('.magnetic-btn') as HTMLButtonElement;
+      if (btn) {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          gsap.to(btn, { x: x * 0.4, y: y * 0.4, duration: 0.5, ease: 'power2.out' });
+        });
+
+        btn.addEventListener('mouseleave', () => {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power2.out', clearProps: 'all' });
+        });
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div ref={containerRef} className="relative w-full overflow-x-hidden">
+      {/* 
+        FIXED CAMERA PLACEHOLDER
+        Stays fixed in the viewport and animated via GSAP across sections.
+      */}
+      <div className="fx3-camera fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 flex flex-col items-center justify-center pointer-events-none will-change-transform">
+        <Image src="/fx3.webp" alt="Sony FX3" width={600} height={400} className="drop-shadow-2xl" priority />
+        <div className="tally-light absolute top-[25%] right-[20%] w-4 h-4 bg-red-500 rounded-full shadow-[0_0_20px_rgba(239,68,68,1)]"></div>
+      </div>
+
+      {/* SECTION 1: HERO */}
+      <section className="hero-section h-screen w-full flex items-center justify-center relative z-10">
+        <h1 className="text-[15vw] font-black tracking-tighter text-zinc-900 flex w-full justify-between px-12 pointer-events-none select-none">
+          <span className="hero-text-left will-change-transform">CINEMA</span>
+          <span className="hero-text-right will-change-transform">LINE</span>
+        </h1>
+      </section>
+
+      {/* SECTION 2: VERTICAL REVOLUTION */}
+      <section className="section-2 h-screen w-full relative flex items-center px-12 md:px-24 z-20">
+        <div className="max-w-2xl relative z-30">
+          <h2 className="sec-2-text text-6xl md:text-8xl font-black mb-8 leading-tight tracking-tight">
+            Mastering the <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 to-zinc-500">Vertical Cut.</span>
+          </h2>
+          <p className="sec-2-text text-2xl text-zinc-400 font-light max-w-lg">
+            Designed for high-retention shorts and flawless clipping. Shoot horizontally, crop vertically without losing the cinematic edge.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* SECTION 3: THE TIMELINE */}
+      <section className="section-3 h-[200vh] w-full relative z-10">
+        <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden pointer-events-none">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="timeline-frame absolute w-48 h-[21.5rem] bg-zinc-900 border border-zinc-800 rounded-xl flex flex-col items-center justify-center opacity-0 z-30 overflow-hidden shadow-2xl"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-950/80 z-10"></div>
+              <div className="w-full flex-grow bg-zinc-800/50 flex items-center justify-center">
+                <svg className="w-12 h-12 text-zinc-700" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+              <div className="w-full h-12 flex items-center justify-between px-4 z-20 bg-zinc-900">
+                <span className="text-zinc-500 font-mono text-xs">RAW_{i + 1}.MP4</span>
+                <span className="text-red-500 font-mono text-[10px]">REC</span>
+              </div>
+            </div>
+          ))}
         </div>
-      </main>
+      </section>
+
+      {/* SECTION 4: ACTION */}
+      <section className="section-4 h-screen w-full flex flex-col items-center justify-center z-50 relative bg-zinc-950">
+        <div className="cta-content flex flex-col items-center">
+          <h2 className="text-6xl md:text-8xl font-black mb-12 tracking-tight">Ready to Shoot?</h2>
+          <button className="magnetic-btn relative px-12 py-6 rounded-full bg-transparent border border-red-600/50 text-red-500 font-bold text-xl uppercase tracking-widest hover:bg-red-600 hover:text-zinc-50 transition-colors duration-300 shadow-[0_0_30px_rgba(239,68,68,0.2)] hover:shadow-[0_0_60px_rgba(239,68,68,0.5)]">
+            Pre-Order FX3
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
