@@ -12,6 +12,7 @@ export default function Home() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
+      gsap.set('.fx3-camera', { xPercent: -50, yPercent: -50 });
       // ----------------------------------------------------
       // SECTION 1: The Recording Starts (Hero)
       // ----------------------------------------------------
@@ -92,7 +93,6 @@ export default function Home() {
           rotation: 0,
         },
         {
-          // PERBAIKAN 1: Nilai X & Y diperkecil agar tidak terlempar keluar layar
           x: (i) => [250, -250, 150, -150, 320, -320][i],
           y: (i) => [-120, -80, 150, 100, -180, 180][i],
           scale: 1,
@@ -102,7 +102,8 @@ export default function Home() {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: '.section-3',
-            start: 'top 30%',
+            // [UBAH INI] dari 'top 30%' menjadi 'top top'
+            start: 'top top',
             end: 'center center',
             scrub: 1.5,
           }
@@ -164,16 +165,16 @@ export default function Home() {
         FIXED CAMERA PLACEHOLDER
         Stays fixed in the viewport and animated via GSAP across sections.
       */}
-      <div className="fx3-camera fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 flex flex-col items-center justify-center pointer-events-none will-change-transform">
-        <Image src="/fx3.webp" alt="Sony FX3" width={600} height={400} className="drop-shadow-2xl" priority />
+      <div className="fx3-camera fixed top-1/2 left-1/2 z-40 flex flex-col items-center justify-center pointer-events-none will-change-transform">
+        <Image src="/fx3.webp" alt="Sony FX3" width={400} height={400} className="drop-shadow-2xl" priority />
         <div className="tally-light absolute top-[25%] right-[20%] w-4 h-4 bg-red-500 rounded-full shadow-[0_0_20px_rgba(239,68,68,1)]"></div>
       </div>
 
       {/* SECTION 1: HERO */}
       <section className="hero-section h-screen w-full flex items-center justify-center relative z-10">
         <h1 className="text-[15vw] font-black tracking-tighter text-zinc-900 flex w-full justify-between px-12 pointer-events-none select-none">
-          <span className="hero-text-left will-change-transform">CINEMA</span>
-          <span className="hero-text-right will-change-transform">LINE</span>
+          <span className="hero-text-left will-change-transform">SONY</span>
+          <span className="hero-text-right will-change-transform">FX3</span>
         </h1>
       </section>
 
@@ -192,7 +193,7 @@ export default function Home() {
 
       {/* SECTION 3: THE TIMELINE */}
       <section className="section-3 h-[200vh] w-full relative z-10">
-        <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden pointer-events-none">
+        <div className="fixed top-0 left-0 h-screen w-full flex items-center justify-center overflow-hidden pointer-events-none z-30">
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
