@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Arvo } from "next/font/google";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -7,10 +8,18 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const arvo = Arvo({
+  subsets: ['latin'],
+  weight: ['400', '700'], // Pilih weight yang kamu butuhkan
+  variable: '--font-arvo', // CSS variable untuk digunakan di Tailwind
+});
+
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+
 
 export const metadata: Metadata = {
   title: "Sony FX3 | Cinema Line",
