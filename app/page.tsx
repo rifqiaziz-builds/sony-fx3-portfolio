@@ -237,7 +237,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/50"></div>
         </div>
         <div className="max-w-2xl relative z-30">
-          <h2 className="sec-2-text text-6xl md:text-8xl font-black mb-8 leading-tight tracking-tight">
+          <h2 className="sec-2-text text-6xl md:text-7xl font-black mb-8 leading-tight tracking-tight">
             Mastering the <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 to-zinc-500">Vertical Cut.</span>
           </h2>
