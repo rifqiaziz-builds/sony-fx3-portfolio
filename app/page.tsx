@@ -174,6 +174,30 @@ export default function Home() {
         FIXED CAMERA PLACEHOLDER
         Stays fixed in the viewport and animated via GSAP across sections.
       */}
+      <header className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+        <nav className="flex items-center gap-8 px-6 py-3 bg-zinc-900/80 backdrop-blur-md border border-zinc-800 rounded-full shadow-2xl">
+
+          {/* Logo/Icon Area */}
+          <div className="flex items-center gap-2 mr-4">
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center font-bold text-black">
+              α
+            </div>
+          </div>
+
+          {/* Menu Links */}
+          <div className="hidden md:flex gap-8 text-zinc-300 font-medium text-sm tracking-wide">
+            <a href="#" className="hover:text-white transition-colors">Cameras</a>
+            <a href="#" className="hover:text-white transition-colors">Lenses</a>
+            <a href="#" className="hover:text-white transition-colors">Stories</a>
+            <a href="#" className="hover:text-white transition-colors">Support</a>
+          </div>
+
+          {/* CTA Button */}
+          <button className="px-6 py-2 bg-zinc-50 text-black font-semibold text-sm rounded-full hover:bg-zinc-200 transition-all">
+            Explore Alpha
+          </button>
+        </nav>
+      </header>
       <div className="fx3-camera fixed top-1/2 left-1/2 z-40 flex flex-col items-center justify-center pointer-events-none will-change-transform">
         <Image src="/fx3.webp" alt="Sony FX3" width={400} height={400} className="drop-shadow-2xl" priority />
         <div className="tally-light absolute top-[25%] right-[20%] w-4 h-4 bg-red-500 rounded-full shadow-[0_0_20px_rgba(239,68,68,1)]"></div>
