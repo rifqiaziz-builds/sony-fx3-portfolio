@@ -304,7 +304,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/50"></div>
         </div>
         <div className="cta-content flex flex-col items-center">
-          <h2 className="text-6xl md:text-8xl font-black mb-12 tracking-tight">Ready to Shoot?</h2>
+          <h2 className="text-6xl md:text-8xl font-white mb-12 tracking-tight">Ready to Shoot?</h2>
           <button className="magnetic-btn relative px-12 py-6 rounded-full bg-transparent border border-red-600/50 text-red-500 font-bold text-xl uppercase tracking-widest hover:bg-red-600 hover:text-zinc-50 transition-colors duration-300 shadow-[0_0_30px_rgba(239,68,68,0.2)] hover:shadow-[0_0_60px_rgba(239,68,68,0.5)]">
             Pre-Order FX3
           </button>
